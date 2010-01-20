@@ -34,7 +34,7 @@ public class World {
     private LinkedList<Cube> objects;
     private IntBuffer vboObjectIds;
 
-    private World() {
+    private World() {     
         //setup inital / final position
 
 
@@ -61,6 +61,7 @@ public class World {
 
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(objects.size()));
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
+        c.setId(objects.size());
         objects.add(c);
     }
 
@@ -136,8 +137,8 @@ public class World {
         while (it.hasNext()) {
             c = it.next();
             cubeColor = c.getColor();
-            float alpha = color.get(3);
-            if ((int) (alpha * 100) == (int) (cubeColor[3] * 100)) {
+            int alpha = Math.round(color.get(3)*100);
+            if (alpha == (int) (cubeColor[3] * 100)) {
                 return c;
             }
         }

@@ -53,7 +53,7 @@ public class Main
 	 * Start of additional code
 	 ****************************************************************************/
 	//Task 1.1, 1.2:
-	private int numberOfTriangles = 0;
+	private Player player = new Player();
 	private IntBuffer vboid = IntBuffer.allocate(1);
 	
 	//Task 3:
@@ -232,7 +232,7 @@ public class Main
                 Cube firstCube = new Cube();
                 firstCube.setColor(new float[]{255,0,0, 0.5f});
                 Cube secondCube = new Cube();
-                secondCube.setColor(new float[]{0,255,0, 0.7f});
+                secondCube.setColor(new float[]{0,255,0, 0.3f});
                 
                 secondCube.setCenter(new Vector3f(2.5f,0,-2.5f));
                 World.getInstance().addCube(firstCube);
@@ -490,9 +490,14 @@ public class Main
                 return;
             }
             Vector2f mousePos = new Vector2f(Mouse.getX(), Mouse.getY());
-
-            if(World.getInstance().objectAtScreenPosition(mousePos) != null){
-                System.out.println("HIT!");
+            Cube c = World.getInstance().objectAtScreenPosition(mousePos);
+            if(c == null){
+                return;
+            }
+            if(c.getId() == 0){
+                player.addPoints(1);
+            } else {
+                player.addPoints(2);
             }
             
             

@@ -16,6 +16,8 @@ public class Cube {
     private Vector3f initalPosition;
     private float size = 1;
     private float[] color = new float[4];
+    private int id = 0;
+    
     
     
     public Cube(){
@@ -67,6 +69,14 @@ public class Cube {
     
     public void setColor(float[] color){
         this.color = color.clone();
+    }
+    
+    public void setId(int id){
+        this.id = id;
+    }
+    
+    public int getId(){
+        return id;
     }
     
     
