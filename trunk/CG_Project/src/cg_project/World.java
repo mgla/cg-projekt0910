@@ -39,7 +39,7 @@ public class World {
 
 
         center = new Vector3f(0, 0, 0);
-        xlen = ylen = zlen = 7;
+        xlen = ylen = zlen = 15;
 
         objectEntrance = new Matrix4f();
         objectEntrance.m30 = center.x - xlen / 2f + 1;
@@ -81,6 +81,7 @@ public class World {
         Matrix4f mv = new Matrix4f();
         mv.load(objectEntrance);
         if (objectInWorld(c)) {
+            //move cube
             c.setCenter(Vector3f.add(c.getCenter(), direction, null));  
         } else {
             c.setToInitialPosition();
@@ -100,9 +101,6 @@ public class World {
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
 
-        
-               
- 
         GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
         GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
