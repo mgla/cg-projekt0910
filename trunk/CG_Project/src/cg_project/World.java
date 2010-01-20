@@ -58,7 +58,7 @@ public class World {
     }
 
     public void addCube(Cube c) {
-        
+
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(objects.size()));
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
         objects.add(c);
@@ -77,43 +77,47 @@ public class World {
         return false;
     }
 
-    public void draw(float step) {
-
+    public void drawObject(float step, Cube c, int objectId) {
+        Matrix4f mv = new Matrix4f();
+        mv.load(objectEntrance);
+        if (objectInWorld(c)) {
+            c.setCenter(Vector3f.add(c.getCenter(), direction, null));
+            mv.translate(c.getCenter());
+        }
+        
+        //GL11.glPushMatrix();
+        GL11.glMultMatrix(Converter.getBufferFromMatrix(mv));
+        //GL11.glPopMatrix();
+        
+        
         final int numberOfTriangles = 12;
         final int SIZE_OF_DATA = 6;
         final int SIZE_OF_FLOAT = 4;
+        ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(objectId));
 
+        float[] cubeColor = c.getColor();
+        GL11.glColor4f(cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
+
+        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+
+        GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
+        GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
+
+        GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+
+        ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, 0);
+    }
+
+    public void draw(float step) {
         int i = 0;
         ListIterator<Cube> it = objects.listIterator();
         while (it.hasNext()) {
             Cube c = it.next();
-            if (!objectInWorld(c)) {
-                movement.load(objectEntrance);
-                c.setToInitialPosition();
-            } else {
-                movement.translate(direction);
-                c.setCenter(c.getCenter().translate(direction.x, direction.y, direction.z));
-            }
-            GL11.glMultMatrix(Converter.getBufferFromMatrix(movement));
-
-            ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(i));
-            
-            float[] cubeColor = c.getColor();
-            GL11.glColor4f(cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
-
-            GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-            GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-
-            GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
-            GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
-            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
-
-            GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-            GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-
-            ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, 0);
+            drawObject(step, c, i);
             i++;
-
         }
     }
 
