@@ -229,8 +229,14 @@ public class Main
 		
 		//Or test it with the coded cube
 		
-                World.getInstance().addCube(new Cube(new Vector3f(1,1,0), 1, new float[]{0,255,0, 0.5f}));
-                World.getInstance().addCube(new Cube(new Vector3f(0,0,0), 1, new float[]{255,0,0, 0.5f}));
+                Cube firstCube = new Cube();
+                firstCube.setColor(new float[]{255,0,0, 0.5f});
+                Cube secondCube = new Cube();
+                secondCube.setColor(new float[]{0,255,0, 0.7f});
+                
+                secondCube.setCenter(new Vector3f(2.5f,0,-2.5f));
+                World.getInstance().addCube(firstCube);
+                World.getInstance().addCube(secondCube);            
 		/*numberOfTriangles = 12;
 		ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboid.get(0));
 		ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);

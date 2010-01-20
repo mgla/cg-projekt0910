@@ -15,7 +15,7 @@ public class Cube {
     private Vector3f center;
     private Vector3f initalPosition;
     private float size = 1;
-    private float[] color;
+    private float[] color = new float[4];
     
     
     public Cube(){
@@ -23,20 +23,20 @@ public class Cube {
         this.initalPosition = new Vector3f(center);
     }
     
-    public Cube(Vector3f center){
-        this.center = center;
-        this.initalPosition = new Vector3f(center);
+    public Cube(Vector3f initialPosition){
+        this.initalPosition = initialPosition;
+        this.center = new Vector3f(initialPosition);
     }
-    
-    public Cube(Vector3f center, float size){
-        this.center = center;
-        this.initalPosition = new Vector3f(center);
+      
+    public Cube(Vector3f initialPosition, float size){
+        this.initalPosition = initialPosition;
+        this.center = new Vector3f(initialPosition);
         this.size = size;
     }
 
-    public Cube(Vector3f center, float size, float[] color){
-        this.center = center;
-        this.initalPosition = new Vector3f(center);
+    public Cube(Vector3f initialPosition, float size, float[] color){ 
+        this.initalPosition = initialPosition;
+        this.center = new Vector3f(initialPosition);
         this.size = size;
         this.color = color.clone();
     }    
