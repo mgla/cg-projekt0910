@@ -229,7 +229,7 @@ public class Main
 		
 		//Or test it with the coded cube
 		
-                World.getInstance().addCube(new Cube(new Vector3f(0,0,0), 1, new float[]{255,0,0, 0.5f}));
+                World.getInstance().addCube(new Cube(new Vector3f(1,1,0), 1, new float[]{0,255,0, 0.5f}));
                 World.getInstance().addCube(new Cube(new Vector3f(0,0,0), 1, new float[]{255,0,0, 0.5f}));
 		/*numberOfTriangles = 12;
 		ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboid.get(0));
@@ -339,12 +339,11 @@ public class Main
 				0.0f, 1.0f, 0.0f);
 
 			//Model matrix
-			GL11.glMultMatrix(Converter.getBufferFromMatrix(rotation));
+			//GL11.glMultMatrix(Converter.getBufferFromMatrix(rotation));
                         
                         //Matrix4f movement = new Matrix4f();
                         //movement.m30 = (step / 1000) % 5;
                         //GL11.glMultMatrix(Converter.getBufferFromMatrix(movement));
-                        GL11.glColor4f(100, 0, 0, 0.5f);  
                         World.getInstance().draw(step);
                         
                         
