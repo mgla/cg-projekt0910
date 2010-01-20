@@ -81,14 +81,13 @@ public class World {
         Matrix4f mv = new Matrix4f();
         mv.load(objectEntrance);
         if (objectInWorld(c)) {
-            c.setCenter(Vector3f.add(c.getCenter(), direction, null));
-            mv.translate(c.getCenter());
+            c.setCenter(Vector3f.add(c.getCenter(), direction, null));  
+        } else {
+            c.setToInitialPosition();
         }
-        
-        //GL11.glPushMatrix();
+        mv.translate(c.getCenter());
+        GL11.glPushMatrix();
         GL11.glMultMatrix(Converter.getBufferFromMatrix(mv));
-        //GL11.glPopMatrix();
-        
         
         final int numberOfTriangles = 12;
         final int SIZE_OF_DATA = 6;
@@ -101,14 +100,20 @@ public class World {
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
 
+        
+               
+ 
         GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
         GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
+        
+        GL11.glPopMatrix();
 
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, 0);
+        
     }
 
     public void draw(float step) {
