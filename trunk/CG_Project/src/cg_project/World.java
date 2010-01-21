@@ -64,6 +64,13 @@ public class World {
         c.setId(objects.size());
         objects.add(c);
     }
+    
+    public void removeCube(Cube c) {
+        IntBuffer b = IntBuffer.allocate(1);
+        b.put(0, vboObjectIds.get(c.getId()));
+        ARBBufferObject.glDeleteBuffersARB(b);
+        objects.remove(c.getId());
+    }
 
     public boolean objectInWorld(Cube c) {
         Vector3f objCenter = c.getCenter();
