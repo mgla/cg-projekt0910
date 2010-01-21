@@ -6,8 +6,11 @@ package cg_project;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.TreeMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBBufferObject;
 import org.lwjgl.opengl.GL11;
@@ -31,8 +34,10 @@ public class World {
     private float ylen;
     private float zlen;    //! how long the object travels from begin to end position
     private int objectDuration = 500;
-    private LinkedList<Cube> objects;
+    private TreeMap<Integer, Cube> objects;
     private IntBuffer vboObjectIds;
+    private final int maxCubes = 1000;
+    private int cubeId = 0;
 
     private World() {     
         //setup inital / final position
@@ -48,8 +53,8 @@ public class World {
         movement = new Matrix4f();
         movement.load(objectEntrance);
 
-        objects = new LinkedList<Cube>();
-        vboObjectIds = IntBuffer.allocate(2);
+        objects = new TreeMap<Integer, Cube>();
+        vboObjectIds = IntBuffer.allocate(maxCubes);
         ARBBufferObject.glGenBuffersARB(vboObjectIds);
     }
 
@@ -57,19 +62,19 @@ public class World {
         return instance;
     }
 
-    public void addCube(Cube c) {
-
+    public synchronized void addCube(Cube c) {
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(objects.size()));
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
-        c.setId(objects.size());
-        objects.add(c);
+        c.setId(cubeId);
+        objects.put(cubeId, c);
+        cubeId++;        
     }
     
-    public void removeCube(Cube c) {
+    public synchronized void removeCube(int cubeId) {
         IntBuffer b = IntBuffer.allocate(1);
-        b.put(0, vboObjectIds.get(c.getId()));
+        b.put(0, vboObjectIds.get(cubeId));
         ARBBufferObject.glDeleteBuffersARB(b);
-        objects.remove(c.getId());
+        objects.remove(cubeId);
     }
 
     public boolean objectInWorld(Cube c) {
@@ -85,15 +90,12 @@ public class World {
         return false;
     }
 
-    public void drawObject(float step, Cube c, int objectId) {
+    public void drawObject(float step, Cube c) {
+        int objectId = c.getId();
         Matrix4f mv = new Matrix4f();
         mv.load(objectEntrance);
-        if (objectInWorld(c)) {
-            //move cube
-            c.setCenter(Vector3f.add(c.getCenter(), direction, null));  
-        } else {
-            c.setToInitialPosition();
-        }
+        //move cube
+        c.setCenter(Vector3f.add(c.getCenter(), direction, null));  
         mv.translate(c.getCenter());
         GL11.glPushMatrix();
         GL11.glMultMatrix(Converter.getBufferFromMatrix(mv));
@@ -122,13 +124,23 @@ public class World {
         
     }
 
-    public void draw(float step) {
-        int i = 0;
-        ListIterator<Cube> it = objects.listIterator();
+    public synchronized void draw(float step) {
+        Iterator<Cube> it = objects.values().iterator();
+        LinkedList<Integer> cubesToRemove = new LinkedList<Integer>();
         while (it.hasNext()) {
             Cube c = it.next();
-            drawObject(step, c, i);
-            i++;
+            if (objectInWorld(c)) {
+                drawObject(step, c);
+            } else {           
+                cubesToRemove.add(c.getId());
+            }                        
+        }
+        if(cubesToRemove.size() == 0){
+            return;
+        }
+        ListIterator<Integer> itr = cubesToRemove.listIterator();
+        while(itr.hasNext()){
+            removeCube(itr.next());
         }
     }
 
@@ -138,7 +150,7 @@ public class World {
         final int mouseHeight = 1;
         final int mouseWidth = 1;
         GL11.glReadPixels((int) pos.x, (int) pos.y, mouseWidth, mouseHeight, GL11.GL_RGBA, GL11.GL_FLOAT, color);
-        ListIterator<Cube> it = objects.listIterator();
+        Iterator<Cube> it = objects.values().iterator();
         float[] cubeColor;
         Cube c;
         while (it.hasNext()) {

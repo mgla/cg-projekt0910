@@ -229,14 +229,14 @@ public class Main
 		
 		//Or test it with the coded cube
 		
-                Cube firstCube = new Cube();
+                /*Cube firstCube = new Cube();
                 firstCube.setColor(new float[]{255,0,0, 0.5f});
                 Cube secondCube = new Cube();
                 secondCube.setColor(new float[]{0,255,0, 0.3f});
                 
                 secondCube.setCenter(new Vector3f(2.5f,0,-2.5f));
                 World.getInstance().addCube(firstCube);
-                World.getInstance().addCube(secondCube);            
+                World.getInstance().addCube(secondCube); */          
 		/*numberOfTriangles = 12;
 		ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboid.get(0));
 		ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
@@ -331,6 +331,16 @@ public class Main
                         //mouseHandler();
 			
 			float step = (float)(System.currentTimeMillis() - startMillis);
+                        
+                        //spawn
+                        if(step % 1000 == 0){
+
+                            Cube c = new Cube();
+                            c.setColor(new float[]{255, 0, 0, 0.5f});
+
+                            World.getInstance().addCube(c);
+                            
+                        }
 			
 			//Clear to the background color
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -499,7 +509,7 @@ public class Main
             } else {
                 player.addPoints(2);
             }
-            World.getInstance().removeCube(c);
+            World.getInstance().removeCube(c.getId());
             
         }
     
