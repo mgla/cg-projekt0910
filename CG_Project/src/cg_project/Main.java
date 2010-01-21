@@ -495,11 +495,11 @@ public class Main
                 return;
             }
             if(c.getId() == 0){
-                player.addPoints(1);
+                player.addPoints(1);               
             } else {
                 player.addPoints(2);
             }
-            
+            World.getInstance().removeCube(c);
             
         }
     
