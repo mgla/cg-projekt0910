@@ -3,6 +3,7 @@ package cg_project;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import java.util.Random;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -333,10 +334,11 @@ public class Main
 			float step = (float)(System.currentTimeMillis() - startMillis);
                         
                         //spawn
-                        if(step % 1000 == 0){
+                        if(step % 500 == 0){
 
                             Cube c = new Cube();
-                            c.setColor(new float[]{255, 0, 0, 0.5f});
+                            Random r = new Random();
+                            c.setColor(new float[]{r.nextFloat(), r.nextFloat(), r.nextFloat(), 0});
 
                             World.getInstance().addCube(c);
                             
