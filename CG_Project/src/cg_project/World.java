@@ -33,10 +33,10 @@ public class World {
     private float xlen;
     private float ylen;
     private float zlen;    //! how long the object travels from begin to end position
-    private int objectDuration = 500;
+    private int objectDuration = 250;
     private TreeMap<Integer, Cube> objects;
     private IntBuffer vboObjectIds;
-    private final int maxCubes = 1000;
+    private final int maxCubes = 100;
     private int cubeId = 0;
 
     private World() {     
@@ -63,11 +63,16 @@ public class World {
     }
 
     public synchronized void addCube(Cube c) {
-        ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(objects.size()));
+        ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(cubeId));
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
         c.setId(cubeId);
+        float[] color = c.getColor();
+        c.setColor(new float[] {color[0], color[1], color[2], cubeId/(float)maxCubes});
         objects.put(cubeId, c);
-        cubeId++;        
+        cubeId++;
+        if(cubeId >= maxCubes){
+            cubeId = 0;
+        }
     }
     
     public synchronized void removeCube(int cubeId) {
@@ -138,9 +143,10 @@ public class World {
         if(cubesToRemove.size() == 0){
             return;
         }
-        ListIterator<Integer> itr = cubesToRemove.listIterator();
-        while(itr.hasNext()){
-            removeCube(itr.next());
+        Integer[] cubesArray = new Integer[cubesToRemove.size()];
+        cubesToRemove.toArray(cubesArray);
+        for(int i = 0; i < cubesArray.length; ++i){
+            removeCube(cubesArray[i]);
         }
     }
 
@@ -153,11 +159,12 @@ public class World {
         Iterator<Cube> it = objects.values().iterator();
         float[] cubeColor;
         Cube c;
+        float alphaf = color.get(3);
+        int alpha = Math.round(color.get(3)*maxCubes);
         while (it.hasNext()) {
             c = it.next();
-            cubeColor = c.getColor();
-            int alpha = Math.round(color.get(3)*100);
-            if (alpha == (int) (cubeColor[3] * 100)) {
+            cubeColor = c.getColor();            
+            if (alpha == (int) (cubeColor[3] * maxCubes)) {
                 return c;
             }
         }
