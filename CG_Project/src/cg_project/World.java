@@ -159,7 +159,6 @@ public class World {
         Iterator<Cube> it = objects.values().iterator();
         float[] cubeColor;
         Cube c;
-        float alphaf = color.get(3);
         int alpha = Math.round(color.get(3)*maxCubes);
         while (it.hasNext()) {
             c = it.next();
