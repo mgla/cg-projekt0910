@@ -79,5 +79,13 @@ public class Cube {
         return id;
     }
     
+    public float getAlpha(){
+        return color[3];
+    }
+    
+    public void setAlpha(float alpha){
+        color[3] = alpha;
+    }
+    
     
 }

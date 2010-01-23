@@ -135,7 +135,7 @@ public class Main {
             float step = (float) (System.currentTimeMillis() - startMillis);
 
             //spawn
-            if (step % 5000 == 0) {
+            if (step % 500 == 0) {
 
                 Cube c = new Cube();
                 Random r = new Random();
