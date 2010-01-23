@@ -69,9 +69,10 @@ public class World {
 
     public void removeCube(int cubeId) {
         //start fading the cube
-        fadingCubes.add(objects.get(cubeId));
+        Cube c = objects.get(cubeId);
+        c.setAlpha(1);
+        fadingCubes.add(c);
         objects.remove(cubeId);
-        //removeCubeGL(cubeId);
     }
 
     /**
@@ -144,7 +145,6 @@ public class World {
             if (objectInWorld(c)) {
                 moveObject(step, c);
             } else {
-                c.setAlpha(1);
                 cubesToFade.add(c.getId());
             }
         }
