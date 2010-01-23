@@ -8,8 +8,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.TreeMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBBufferObject;
@@ -33,7 +31,7 @@ public class World {
     private float xlen;
     private float ylen;
     private float zlen;    //! how long the object travels from begin to end position
-    private int objectDuration = 250;
+    private int objectDuration = 500;
     private TreeMap<Integer, Cube> objects;
     private IntBuffer vboObjectIds;
     private final int maxCubes = 100;
@@ -147,7 +145,7 @@ public class World {
         cubesToRemove.toArray(cubesArray);
         for(int i = 0; i < cubesArray.length; ++i){
             removeCube(cubesArray[i]);
-        }
+        }        
     }
 
     public Cube objectAtScreenPosition(Vector2f pos) {
@@ -155,11 +153,25 @@ public class World {
         //in pixels
         final int mouseHeight = 1;
         final int mouseWidth = 1;
+        
+        GL11.glPushClientAttrib(GL11.GL_CLIENT_PIXEL_STORE_BIT);
+        
+        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, GL11.GL_FALSE);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SWAP_BYTES, GL11.GL_FALSE);
+        GL11.glPixelStorei(GL11.GL_UNPACK_LSB_FIRST, GL11.GL_FALSE);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ROW_LENGTH, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+
         GL11.glReadPixels((int) pos.x, (int) pos.y, mouseWidth, mouseHeight, GL11.GL_RGBA, GL11.GL_FLOAT, color);
+        GL11.glPopClientAttrib();
+        
         Iterator<Cube> it = objects.values().iterator();
         float[] cubeColor;
         Cube c;
         int alpha = Math.round(color.get(3)*maxCubes);
+        
         while (it.hasNext()) {
             c = it.next();
             cubeColor = c.getColor();            

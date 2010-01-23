@@ -1,6 +1,5 @@
 package cg_project;
 
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import java.util.Random;
@@ -9,9 +8,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
-import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBBufferObject;
@@ -32,12 +29,6 @@ public class Main {
     private int height = 480;
     private float fov = 60.0f;
     private Vector4f cameraPosition = new Vector4f(0.0f, 0.0f, 5.0f, 1.0f);
-    private Vector4f lightPosition = new Vector4f(3.0f, 3.0f, 3.0f, 1.0f);    //3 for position, 3 for normals
-    private final int SIZE_OF_DATA = 6;
-    private final int SIZE_OF_FLOAT = 4;
-    private boolean leftMouseButtonDown = false;
-    private Vector2f prevMousePos = new Vector2f(0.0f, 0.0f);
-    private Matrix3f rotation = new Matrix3f();
     /* ***************************************************************************
      * Additional Code has to be added here. Global variables and some additional
      * functions. Please also state, to which task the additional code
@@ -144,7 +135,7 @@ public class Main {
             float step = (float) (System.currentTimeMillis() - startMillis);
 
             //spawn
-            if (step % 500 == 0) {
+            if (step % 5000 == 0) {
 
                 Cube c = new Cube();
                 Random r = new Random();
