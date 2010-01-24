@@ -13,33 +13,17 @@ import org.lwjgl.util.vector.Vector4f;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.ARBBufferObject;
 
-/**
- * This is the main class. Here you will find the following tasks:
- * <br>
- * {@link #init() Task 1.1 Setup the VBO for a cube}<br>
- * {@link #destroy() Task 1.1* Clean up VBO}<br>
- * {@link #loop() Task 1.2 Render the VBO}<br>
- * {@link #createData(ObjImporter objImporter) Task 2 Convert data from Obj to VBO}<br>
- * {@link #init() Task 2* Load a bunny}<br>
- * {@link #handleEvents() Task 3 Implement a Virtual Trackball to rotate the bunny}<br>
- */
 public class Main {
     private int width = 640;
     private int height = 480;
     private float fov = 60.0f;
     private Vector4f cameraPosition = new Vector4f(0.0f, 0.0f, 5.0f, 1.0f);
-    /* ***************************************************************************
-     * Additional Code has to be added here. Global variables and some additional
-     * functions. Please also state, to which task the additional code
-     * belongs like:
-     * //Task 1.1, 1.2:
-     * private int senseless = 0;
-     *
-     * Start of additional code
-     ****************************************************************************/
-    //Task 1.1, 1.2:
+    
+    // Class for player score management
     private Player player = new Player();
     private IntBuffer vboid = IntBuffer.allocate(1);
+    
+    // Time between spawn of two cubes in milliseconds
     private int spawnTime = 800;
 
     /**
@@ -71,19 +55,6 @@ public class Main {
     /**
      * This is the initialization of the open gl window. Here we set up
      * the display with its viewport and the projection matrix.<br>
-     * <br>
-     * <b><font color = "#ff0000">Task 1.1:</font></b><br>
-     * Create the VBO here by using a data buffer. In order to fill the buffer
-     * can use the {@link de.rwth_aachen.graphics.Primitives#createCubeData() createCubeData()}
-     * method from the Primitives class.<br>
-     * <br>
-     * <b><font color = "#ff0000">Task 2*:</font></b><br>
-     * Instead of using the Primitive data, you have to use the obj importer and
-     * call your implemented function {@link #createData(ObjImporter) createData()}.<br>
-     * <br>
-     * <i>Hint:</i> Use the bunny geometry which you can find here: 
-     * res/geometry/Bunny.obj. The following function might be helpful:
-     * {@link de.rwth_aachen.graphics.ObjImporter#getTriangleCount() getTriangleCount()}
      */
     private void init() throws LWJGLException {
         Display.setLocation(
@@ -115,12 +86,7 @@ public class Main {
 
     /**
      * This is the render loop. It will stop, when the close button of the
-     * Display is hit.<br>
-     * <br>
-     * <b><font color = "#ff0000">Task 1.2:</font></b><br>
-     * Instead of using the intermediate drawCube method use VBOs to render the 
-     * geometry. You can use the SIZE_OF_DATA and SIZE_OF_FLOAT commands to
-     * calculate the size in bytes of each element in the array buffer.
+     * Display is hit.
      */
     private void loop() {
         long startMillis = System.currentTimeMillis();
@@ -179,27 +145,7 @@ public class Main {
             1.0f}));*/
 
 
-            //Draw a cube
-            /****************************************************************************
-             * Start of task 1.2:
-             ****************************************************************************/
-            //Primitives.drawCube();absoluteRotation
-			/*ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboid.get(0));
-            
-            GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-            GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-            
-            GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
-            GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
-            GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
-            
-            GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-            GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-            
-            ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, 0);*/
-            /****************************************************************************
-             * End of task 1.2
-             ****************************************************************************/            //Swap the buffers
+            //Swap the buffers
             Display.update();
 
             mouseHandler();
@@ -240,18 +186,9 @@ public class Main {
     /**
      * Destroy the display. This is a simple method right now, but later we can
      * clean up other things within this function. <br>
-     * <br>
-     * <b><font color = "#ff0000">Task 1.1*:</font></b>
-     * Clean up any created buffers.
      */
     private void destroy() {
-        /****************************************************************************
-         * Start of task 1.1*:
-         ****************************************************************************/
         ARBBufferObject.glDeleteBuffersARB(vboid);
-        /****************************************************************************
-         * End of task 1.1*
-         ****************************************************************************/
         Display.destroy();
     }
 }
