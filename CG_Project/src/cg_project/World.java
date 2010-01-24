@@ -26,7 +26,7 @@ public class World {
 
     private static World instance = new World();
     //! how long the object travels from begin to end position
-    private int objectDuration = 1500;
+    private int objectDuration = 100;
     // object entrance point
     private Matrix4f objectEntrance = new Matrix4f();
     private Vector3f direction = new Vector3f(1f / objectDuration, 0, -1f / objectDuration);
@@ -38,8 +38,12 @@ public class World {
     private TreeMap<Integer, Cube> objects = new TreeMap<Integer, Cube>();
     private IntBuffer vboObjectIds;
     private final int maxCubes = 100;
+    
+    // StartID for Cubes
     private int cubeId = 0;
-    private float fadingSpeed = 0.01f / 100;
+    
+    // Fading speed of a cube - the smaller the slower.
+    private float fadingSpeed = 1.0f / 100;
     private LinkedList<Cube> fadingCubes = new LinkedList<Cube>();
 
     private World() {
