@@ -157,7 +157,7 @@ public class Main {
             } else {
                 float timeUsed = (float) (fpsCheck - currentMillis + 1000);
                 fpsCheck = currentMillis + 1000;
-                Display.setTitle("Computer Graphics (" + ((float) fps / (timeUsed / 1000.0f)) + " fps)");
+                Display.setTitle("Computer Graphics (" + ((float) fps / (timeUsed / 1000.0f)) + " fps)" + " Player points : " + player.getPoints());
                 fps = 0;
             }
         }
