@@ -40,7 +40,7 @@ public class Main {
     //Task 1.1, 1.2:
     private Player player = new Player();
     private IntBuffer vboid = IntBuffer.allocate(1);
-    private int spawnTime = 500;
+    private int spawnTime = 800;
 
     /**
      * Entry point for the java program.

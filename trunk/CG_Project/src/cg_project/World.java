@@ -26,7 +26,7 @@ public class World {
 
     private static World instance = new World();
     //! how long the object travels from begin to end position
-    private int objectDuration = 100;
+    private int objectDuration = 1500;
     // object entrance point
     private Matrix4f objectEntrance = new Matrix4f();
     private Vector3f direction = new Vector3f(1f / objectDuration, 0, -1f / objectDuration);
@@ -39,7 +39,7 @@ public class World {
     private IntBuffer vboObjectIds;
     private final int maxCubes = 100;
     private int cubeId = 0;
-    private float fadingSpeed = 1.0f / 100;
+    private float fadingSpeed = 0.01f / 100;
     private LinkedList<Cube> fadingCubes = new LinkedList<Cube>();
 
     private World() {
@@ -55,6 +55,9 @@ public class World {
         return instance;
     }
 
+    /**
+     * Adds a cube at the entrance point
+     */
     public void addCube(Cube c) {
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(cubeId));
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
@@ -67,6 +70,9 @@ public class World {
         }
     }
 
+    /**
+     * Removes Cube from the active objects.
+     */
     public void removeCube(int cubeId) {
         //start fading the cube
         Cube c = objects.get(cubeId);
@@ -85,10 +91,16 @@ public class World {
         ARBBufferObject.glDeleteBuffersARB(b);
     }
 
+    /**
+     * Fades a cube out a bit
+     */
     public void fadeCube(Cube c) {
         c.setAlpha(c.getAlpha() - fadingSpeed);
     }
-
+    
+    /**
+     * Tests if an objects is within the world space
+     */
     public boolean objectInWorld(Cube c) {
         Vector3f objCenter = c.getCenter();
         float objSize = c.getSize();
@@ -102,6 +114,9 @@ public class World {
         return false;
     }
 
+    /**
+     * Draws active and fading objects 
+     */
     public void drawObject(Cube cube) {
 
         final int numberOfTriangles = 12;
@@ -124,7 +139,9 @@ public class World {
         GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
     }
     
-    
+    /**
+     * Moves object by direction.
+     */
     public void moveObject(Cube c) {
         Matrix4f mv = new Matrix4f();
         mv.load(objectEntrance);
@@ -143,12 +160,16 @@ public class World {
         LinkedList<Integer> cubesToFade = new LinkedList<Integer>();
         while (it.hasNext()) {
             Cube c = it.next();
+            // Objects within world space are moved
             if (objectInWorld(c)) {
                 moveObject(c);
             } else {
+            // Objects out of world space a set to fade
                 cubesToFade.add(c.getId());
             }
         }
+        
+        // remove fading objects from the list of active objects
         if (cubesToFade.size() > 0) {
             Integer[] cubesArray = new Integer[cubesToFade.size()];
             cubesToFade.toArray(cubesArray);
@@ -181,7 +202,10 @@ public class World {
 
 
     }
-
+    
+    /**
+     * Get Cube by Screen position - the picking function.
+     */
     public Cube objectAtScreenPosition(Vector2f pos) {
         FloatBuffer color = BufferUtils.createFloatBuffer(4);
         //in pixels
