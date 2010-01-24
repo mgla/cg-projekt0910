@@ -24,7 +24,6 @@ import org.lwjgl.opengl.ARBBufferObject;
  * {@link #handleEvents() Task 3 Implement a Virtual Trackball to rotate the bunny}<br>
  */
 public class Main {
-    //private int width = 640;
     private int width = 640;
     private int height = 480;
     private float fov = 60.0f;
@@ -41,6 +40,7 @@ public class Main {
     //Task 1.1, 1.2:
     private Player player = new Player();
     private IntBuffer vboid = IntBuffer.allocate(1);
+    private int spawnTime = 500;
 
     /**
      * Entry point for the java program.
@@ -127,16 +127,20 @@ public class Main {
         long fpsCheck = System.currentTimeMillis() + 1000;
         long fps = 0;
 
+        long time, oldtime;
+        time = oldtime = 0;
+        
         while (!Display.isCloseRequested()) {
             //Handle all input events.
             //handleEvents();
             //mouseHandler();
 
-            float step = (float) (System.currentTimeMillis() - startMillis);
-
+            time = (System.currentTimeMillis() - startMillis);
+            
             //spawn
-            if (step % 500 == 0) {
-
+            if ((time - oldtime) >= spawnTime) {
+            	oldtime = time;
+            	
                 Cube c = new Cube();
                 Random r = new Random();
                 c.setColor(new float[]{r.nextFloat(), r.nextFloat(), r.nextFloat(), 0});
@@ -163,7 +167,7 @@ public class Main {
             //Matrix4f movement = new Matrix4f();
             //movement.m30 = (step / 1000) % 5;
             //GL11.glMultMatrix(Converter.getBufferFromMatrix(movement));
-            World.getInstance().draw(step);
+            World.getInstance().draw();
 
 
 

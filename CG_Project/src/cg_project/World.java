@@ -27,7 +27,7 @@ public class World {
     private static World instance = new World();
     //! how long the object travels from begin to end position
     private int objectDuration = 100;
-    private int spawnTime = 500;
+    // object entrance point
     private Matrix4f objectEntrance = new Matrix4f();
     private Vector3f direction = new Vector3f(1f / objectDuration, 0, -1f / objectDuration);
     private Matrix4f movement = new Matrix4f();
@@ -123,8 +123,9 @@ public class World {
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
     }
-
-    public void moveObject(float step, Cube c) {
+    
+    
+    public void moveObject(Cube c) {
         Matrix4f mv = new Matrix4f();
         mv.load(objectEntrance);
         //move cube
@@ -137,13 +138,13 @@ public class World {
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, 0);
     }
 
-    public void draw(float step) {
+    public void draw() {
         Iterator<Cube> it = objects.values().iterator();
         LinkedList<Integer> cubesToFade = new LinkedList<Integer>();
         while (it.hasNext()) {
             Cube c = it.next();
             if (objectInWorld(c)) {
-                moveObject(step, c);
+                moveObject(c);
             } else {
                 cubesToFade.add(c.getId());
             }
