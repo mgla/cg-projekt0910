@@ -57,8 +57,7 @@ public class World {
 
     public void addCube(Cube c) {
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(cubeId));
-        //ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
-        Primitives.drawCube();
+        ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
         c.setId(cubeId);
         c.setAlpha(cubeId / (float)maxCubes);
         objects.put(cubeId, c);
