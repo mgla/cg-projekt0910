@@ -7,7 +7,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
@@ -42,10 +41,6 @@ public class Main {
     //Task 1.1, 1.2:
     private Player player = new Player();
     private IntBuffer vboid = IntBuffer.allocate(1);
-    private IntBuffer sceneTex = IntBuffer.allocate(1);
-
-    private IntBuffer fboDepthbuffer = IntBuffer.allocate(1);
-    private IntBuffer fbo = IntBuffer.allocate(1);
 
     /**
      * Entry point for the java program.
@@ -104,39 +99,12 @@ public class Main {
 
 
         GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_NORMALIZE);
 
 
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        
-        GL11.glGenTextures( sceneTex);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, sceneTex.get(0));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, 128, 128, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, (IntBuffer)null);
-        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-        GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
-                
-
-        EXTFramebufferObject.glGenFramebuffersEXT(fbo);
-        EXTFramebufferObject.glGenRenderbuffersEXT(fboDepthbuffer);
-
-        EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, fbo.get(0));
-        EXTFramebufferObject.glBindRenderbufferEXT(EXTFramebufferObject.GL_RENDERBUFFER_EXT, fboDepthbuffer.get(0));
-
-
-        EXTFramebufferObject.glRenderbufferStorageEXT(EXTFramebufferObject.GL_RENDERBUFFER_EXT, GL11.GL_DEPTH_COMPONENT, 128, 128);
-        EXTFramebufferObject.glFramebufferRenderbufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, EXTFramebufferObject.GL_DEPTH_ATTACHMENT_EXT, EXTFramebufferObject.GL_RENDERBUFFER_EXT, fboDepthbuffer.get(0));
-        EXTFramebufferObject.glFramebufferTexture2DEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, EXTFramebufferObject.GL_COLOR_ATTACHMENT0_EXT, GL11.GL_TEXTURE_2D, sceneTex.get(0), 0);
-
-        EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, 0);
-        EXTFramebufferObject.glBindRenderbufferEXT(EXTFramebufferObject.GL_RENDERBUFFER_EXT, 0);
-        
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        
         //Setup Projection and Viewport
         GL11.glViewport(0, 0, width, height);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
@@ -177,30 +145,10 @@ public class Main {
 
             }
 
-            
-
-            EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, fbo.get(0));
-            GL11.glPushAttrib(GL11.GL_VIEWPORT_BIT);
-            GL11.glViewport(0,0,128,128);
-
-            GL11.glLoadIdentity();
-
-            GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-
             //Clear to the background color
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-            GL11.glPopAttrib();
-
-            EXTFramebufferObject.glBindFramebufferEXT(EXTFramebufferObject.GL_FRAMEBUFFER_EXT, 0);
-
-            GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
-            
             //Setting the current object transformation
-
-            //GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glLoadIdentity();
 
             //View matrix
@@ -215,15 +163,8 @@ public class Main {
             //Matrix4f movement = new Matrix4f();
             //movement.m30 = (step / 1000) % 5;
             //GL11.glMultMatrix(Converter.getBufferFromMatrix(movement));
-
-            
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, sceneTex.get());
-
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            
             World.getInstance().draw(step);
 
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
 
 
             //Setting the current color
@@ -304,8 +245,6 @@ public class Main {
          * Start of task 1.1*:
          ****************************************************************************/
         ARBBufferObject.glDeleteBuffersARB(vboid);
-        EXTFramebufferObject.glDeleteFramebuffersEXT(fbo);
-        EXTFramebufferObject.glDeleteRenderbuffersEXT(fboDepthbuffer);
         /****************************************************************************
          * End of task 1.1*
          ****************************************************************************/
