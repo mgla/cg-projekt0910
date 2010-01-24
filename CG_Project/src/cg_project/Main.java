@@ -24,7 +24,7 @@ public class Main {
     private IntBuffer vboid = IntBuffer.allocate(1);
     
     // Time between spawn of two cubes in milliseconds
-    private int spawnTime = 500;
+    private int spawnTime = 2500;
 
     /**
      * Entry point for the java program.

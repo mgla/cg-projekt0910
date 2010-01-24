@@ -44,11 +44,12 @@ public class World {
     
     // Fading speed of a cube - the smaller the slower.
     private float fadingSpeed = 1.0f / 100;
-    private LinkedList<Cube> fadingCubes = new LinkedList<Cube>();
+    private LinkedList<Cube> fadingCubesOut = new LinkedList<Cube>();
+    private LinkedList<Cube> fadingCubesIn = new LinkedList<Cube>();
 
     private World() {
         //setup inital / final position        
-        objectEntrance.m30 = center.x - xlen / 2f + 1;
+        objectEntrance.m30 = center.x - 2; // - xlen / 2f + 1;
         movement.load(objectEntrance);
 
         vboObjectIds = IntBuffer.allocate(maxCubes);
@@ -67,7 +68,8 @@ public class World {
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
         c.setId(cubeId);
         c.setAlpha(cubeId / (float)maxCubes);
-        objects.put(cubeId, c);
+        //objects.put(cubeId, c);
+        fadingCubesIn.add(c);
         cubeId++;
         if (cubeId >= maxCubes) {
             cubeId = 0;
@@ -81,7 +83,7 @@ public class World {
         //start fading the cube
         Cube c = objects.get(cubeId);
         c.setAlpha(1);
-        fadingCubes.add(c);
+        fadingCubesOut.add(c);
         objects.remove(cubeId);
     }
 
@@ -98,8 +100,15 @@ public class World {
     /**
      * Fades a cube out a bit
      */
-    public void fadeCube(Cube c) {
+    public void fadeCubeOut(Cube c) {
         c.setAlpha(c.getAlpha() - fadingSpeed);
+    }
+
+    /**
+     * Fades a cube in a bit
+     */
+    public void fadeCubeIn(Cube c){
+        c.setAlpha(c.getAlpha() + fadingSpeed);
     }
     
     /**
@@ -186,10 +195,10 @@ public class World {
         //perform fading
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        ListIterator<Cube> fit = fadingCubes.listIterator();
+        ListIterator<Cube> fit = fadingCubesOut.listIterator();
         while (fit.hasNext()) {
             Cube c = fit.next();
-            fadeCube(c);
+            fadeCubeOut(c);
             GL11.glPushMatrix();
             Matrix4f m = new Matrix4f();
             m.load(objectEntrance);
@@ -201,6 +210,22 @@ public class World {
                 removeCubeGL(c.getId());
                 fit.remove();
             }
+        }
+        fit = fadingCubesIn.listIterator();
+        while(fit.hasNext()){
+            Cube c = fit.next();
+            fadeCubeIn(c);
+            GL11.glPushMatrix();
+            Matrix4f m = new Matrix4f();
+            m.load(objectEntrance);
+            m.translate(c.getCenter());
+            GL11.glMultMatrix(Converter.getBufferFromMatrix(m));
+            drawObject(c);
+            GL11.glPopMatrix();
+            if(c.getColor()[3] >= 0){
+                objects.put(c.getId(), c);
+                fit.remove();
+            }            
         }
         GL11.glDisable(GL11.GL_BLEND);
 
