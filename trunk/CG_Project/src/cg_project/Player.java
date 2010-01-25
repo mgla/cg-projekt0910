@@ -1,24 +1,20 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cg_project;
 
 /**
- *
- * @author christiandernehl
+ * @author Maik Glatki, Christian Dernehl, Dominic Gatzen
  */
 public class Player {
     
     private int points = 0;
     
-    
-    
     public Player(){
         
     }
     
+    public int getPoints()
+    {
+    	return this.points;
+    }
     
     void addPoints(int points){
         this.points += points;

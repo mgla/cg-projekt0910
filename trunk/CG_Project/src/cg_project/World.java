@@ -13,20 +13,20 @@ import java.util.TreeMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBBufferObject;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- *
- * @author christiandernehl
+ * @author Maik Glatki, Christian Dernehl, Dominic Gatzen
  */
 public class World {
 
     private static World instance = new World();
     //! how long the object travels from begin to end position
-    private int objectDuration = 100;
+    private int objectDuration = 1500;
     // object entrance point
     private Matrix4f objectEntrance = new Matrix4f();
     private Vector3f direction = new Vector3f(1f / objectDuration, 0, -1f / objectDuration);
@@ -43,7 +43,7 @@ public class World {
     private int cubeId = 0;
     
     // Fading speed of a cube - the smaller the slower.
-    private float fadingSpeed = 1.0f / 100;
+    private float fadingSpeed = 1.0f / 3000;
     private LinkedList<Cube> fadingCubesOut = new LinkedList<Cube>();
     private LinkedList<Cube> fadingCubesIn = new LinkedList<Cube>();
 
@@ -139,17 +139,30 @@ public class World {
         
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(cube.getId()));
         
-        float[] cubeColor = cube.getColor();
-        GL11.glColor4f(cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
-
+        //float[] cubeColor = cube.getColor();
+        //GL11.glColor4f(cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
+        GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+        
+        
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.getTextureID());
 
+        GL13.glClientActiveTexture(GL13.GL_TEXTURE0);
+
+        
         GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
         GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
+        
+        GL11.glPushMatrix();
+        	GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * 12);
+        GL11.glPopMatrix();
+        
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glDisableClientState(GL11.GL_NORMAL_ARRAY);
+        GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
     }
     
     /**

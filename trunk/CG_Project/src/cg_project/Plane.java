@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cg_project;
 
 import org.lwjgl.util.vector.Vector3f;
 
 
 /**
- *
- * @author christiandernehl
+ * @author Maik Glatki, Christian Dernehl, Dominic Gatzen
  */
 public class Plane {
     

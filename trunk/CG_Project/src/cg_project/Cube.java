@@ -1,15 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cg_project;
 
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- *
- * @author christiandernehl
+ * @author Maik Glatki, Christian Dernehl, Dominic Gatzen
  */
 public class Cube {
     private Vector3f center;
@@ -17,34 +11,43 @@ public class Cube {
     private float size = 1;
     private float[] color = new float[4];
     private int id = 0;
+    private int textureID = 0;
     
     
     
-    public Cube(){
+    public Cube(int textureID){
         center = new Vector3f(0,0,0);
         this.initalPosition = new Vector3f(center);
+        this.textureID = textureID;
     }
     
-    public Cube(Vector3f initialPosition){
+    public Cube(Vector3f initialPosition, int textureID){
         this.initalPosition = initialPosition;
         this.center = new Vector3f(initialPosition);
+        this.textureID = textureID;
     }
       
-    public Cube(Vector3f initialPosition, float size){
+    public Cube(Vector3f initialPosition, float size, int textureID){
         this.initalPosition = initialPosition;
         this.center = new Vector3f(initialPosition);
         this.size = size;
+        this.textureID = textureID;
     }
 
-    public Cube(Vector3f initialPosition, float size, float[] color){ 
+    public Cube(Vector3f initialPosition, float size, float[] color, int textureID){ 
         this.initalPosition = initialPosition;
         this.center = new Vector3f(initialPosition);
         this.size = size;
         this.color = color.clone();
+        this.textureID = textureID;
     }    
     
     public Vector3f getCenter(){
         return center;
+    }
+    public int getTextureID()
+    {
+    	return this.textureID;
     }
     
     public float getSize(){
