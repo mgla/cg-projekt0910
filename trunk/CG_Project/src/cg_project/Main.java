@@ -339,8 +339,6 @@ public class Main {
                     0.0f, 0.0f, -5.0f,
                     0.0f, 1.0f, 0.0f);          
             
-
-            // Draw the Master Cube
             // Choose texture
 
             GL11.glEnable(GL11.GL_TEXTURE_2D);
