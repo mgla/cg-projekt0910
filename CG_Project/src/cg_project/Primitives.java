@@ -109,4 +109,26 @@ class Primitives
 			GL11.glVertex3f(-1.0f, 1.0f, -1.0f);
 		GL11.glEnd();
 	}
+	
+	/**
+     * Render immediate grid.
+     * @param repetitions Number of lines to be drawn in each direction.
+     * @param increment Distance between the lines.
+     */
+    public static void drawGrid(int repetitions, float increment) 
+    {
+        float size = repetitions * increment;
+        GL11.glBegin(GL11.GL_LINES);
+            for(int i = -repetitions; i <= repetitions; i++)
+            {
+                GL11.glVertex3f(-size, -1.0f, i * increment);
+                GL11.glVertex3f( size, -1.0f, i * increment);
+            }
+            for(int i = -repetitions; i <= repetitions; i++)
+            {
+                GL11.glVertex3f(i * increment, -1.0f, -size);
+                GL11.glVertex3f(i * increment, -1.0f,  size);
+            }
+        GL11.glEnd();
+    }
 }
