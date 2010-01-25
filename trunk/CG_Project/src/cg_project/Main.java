@@ -2,8 +2,11 @@ package cg_project;
 
 import java.nio.IntBuffer;
 import java.nio.FloatBuffer;
-
+import java.util.Hashtable;
 import java.util.Random;
+import java.util.Enumeration;
+
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -33,7 +36,8 @@ public class Main {
     private final int TEXTURE_TEX2 = 3;
     private final int TEXTURE_TEX3 = 4;
     private final int TEXTURE_TEX4 = 5;
-    private final int TEXTURE_COUNT = 6;
+    private final int TEXTURE_YINGYANG = 6;
+    private final int TEXTURE_COUNT = 7;
     private float GL_VERSION;
     //3 for position, 3 for normals, 2 for texture coordinates
     private final int SIZE_OF_DATA = 8;
@@ -50,7 +54,7 @@ public class Main {
 
     
     // Time between spawn of two cubes in milliseconds
-    private int spawnTime = 2500;
+    private int spawnTime = 1400;
 
     /**
      * Entry point for the java program.
@@ -127,47 +131,27 @@ public class Main {
         TextureImporter textureImporter = null;
         
         //The textures
+        Hashtable <Integer, String>hash = new Hashtable();
+        hash.put(TEXTURE_CUBE_DUMMY, "Dummy.jpg");
+        hash.put(TEXTURE_CUBE_METAL, "metal.jpg");
+        hash.put(TEXTURE_TEX1, "tex1.jpg");
+        hash.put(TEXTURE_TEX2, "tex2.jpg");
+        hash.put(TEXTURE_TEX3, "tex3.jpg");
+        hash.put(TEXTURE_TEX4, "tex4.jpg");        
+        hash.put(TEXTURE_YINGYANG, "ying-yang.jpg");
         
-        // Dummy texture
-        textureImporter = new TextureImporter("Dummy.jpg");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_CUBE_DUMMY));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        Enumeration <Integer> e = hash.keys();
         
-        textureImporter = new TextureImporter("metal.jpg");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_CUBE_METAL));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        
-        textureImporter = new TextureImporter("tex1.jpg");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX1));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        
-        
-        textureImporter = new TextureImporter("tex2.jpg");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX2));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        
-        
-        textureImporter = new TextureImporter("tex3.jpg");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX3));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        
-        textureImporter = new TextureImporter("tex4.jpg");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX4));
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        while (e.hasMoreElements()) {
+            Integer key = (Integer) e.nextElement();
+            textureImporter = new TextureImporter(hash.get(key));
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(key.intValue()));
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        }
 
-        //Setup Projection and Viewport
+        //Setup Projection and view port
         GL11.glViewport(0, 0, width, height);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -176,6 +160,7 @@ public class Main {
         
         // Random generator
         this.rand = new Random();
+        
     }
 
     /**
