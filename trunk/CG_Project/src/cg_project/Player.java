@@ -19,8 +19,4 @@ public class Player {
     void addPoints(int points){
         this.points += points;
     }
-
-    int getPoints(){
-        return points;
-    }
 }
