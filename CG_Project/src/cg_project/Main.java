@@ -20,7 +20,7 @@ import org.lwjgl.opengl.ARBBufferObject;
 import org.lwjgl.opengl.ARBVertexBufferObject;
 
 /**
- * @author Maik Glatki, Christian Dernehl, Dominic Gatzen, huge parts: Lehrstuhl für Informatik VIII exercises 
+ * @author Maik Glatki, Christian Dernehl, Dominic Gatzen, huge parts: Lehrstuhl fï¿½r Informatik VIII exercises 
  */
 
 public class Main {
@@ -97,6 +97,23 @@ public class Main {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_NORMALIZE);
 
+        // Somewhere in the initialization part of your programâ€¦
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_LIGHT0);
+        GL11.glEnable(GL11.GL_LIGHT1);
+
+
+        // GL_LIGHT0
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] { 0.9f, 0.3f, 0.5f, 1.0f }));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] { 0.9f, 0.9f, 0.9f, 1.0f }));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] { 0.4f, 0.4f, 0.4f, 1.0f }));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, FloatBuffer.wrap(new float[] { 4.5f, 1.0f, 4.0f, 1.0f }));
+
+        // GL_LIGHT0
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] { 0.0f, 0.0f, 0.9f, 1.0f }));
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] { 0.2f, 0.2f, 0.2f, 1.0f }));
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] { 0.8f, 0.8f, 0.8f, 1.0f }));
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, FloatBuffer.wrap(new float[] { -4.0f, 1.0f, -4.0f, 1.0f }));
 
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
@@ -227,7 +244,7 @@ public class Main {
             }
             
             // End of texturing
-            GL11.glDisable(GL11.GL_LIGHTING);
+           // GL11.glDisable(GL11.GL_LIGHTING);
             World.getInstance().draw();
 
             // Zeichne Grid
