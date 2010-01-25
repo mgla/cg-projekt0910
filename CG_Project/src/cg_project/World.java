@@ -43,7 +43,7 @@ public class World {
     private int cubeId = 0;
     
     // Fading speed of a cube - the smaller the slower.
-    private float fadingSpeed = 1.0f / 3000;
+    private float fadingSpeed = 1.0f / 100;
     private LinkedList<Cube> fadingCubesOut = new LinkedList<Cube>();
     private LinkedList<Cube> fadingCubesIn = new LinkedList<Cube>();
 
