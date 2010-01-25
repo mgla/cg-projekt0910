@@ -1,17 +1,24 @@
 package cg_project;
 
-import java.nio.IntBuffer;
-import java.nio.FloatBuffer;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.Enumeration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ByteBuffer;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.ARBShaderObjects;
+import org.lwjgl.opengl.ARBVertexShader;
+import org.lwjgl.opengl.ARBFragmentShader;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector4f;
@@ -42,6 +49,13 @@ public class Main {
     //3 for position, 3 for normals, 2 for texture coordinates
     private final int SIZE_OF_DATA = 8;
     private final int SIZE_OF_FLOAT = 4;
+    private int shaderProgram = 0;
+    private final int LIGHT_RED = 0;
+    private final int LIGHT_GREEN = 1;
+    private final int LIGHT_BLUE = 2;
+    private final int LIGHT_MAX = 3;
+    private Vector4f[] lightPosition = new Vector4f[LIGHT_MAX];
+    private Vector4f[] lightColor = new Vector4f[LIGHT_MAX];
     
     
     private IntBuffer textureid = IntBuffer.allocate(TEXTURE_COUNT);
@@ -79,7 +93,83 @@ public class Main {
         loop();
         destroy();
     }
+    /**
+     * This method converts a String to a ByteBuffer.
+     * @param string The string that has to be converted.
+     * @return A zero terminated ByteBuffer of the string in UTF-8.
+     */
+    private ByteBuffer getByteBufferFromString(String string)
+    {
+        string += "\0";
+        try
+        {
+            return ByteBuffer.wrap(string.getBytes("UTF-8"));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    /**
+     * This method to load vertex and fragment shaders. <br>
+     * @param vertFile The file name of the vertex shader.
+     * @param fragFile The file name of the fragment shader.
+     * @return Program context of the shader.
+     */
+    private int loadShaders(String vertFile, String fragFile)
+    {
+        ByteBuffer vertContent = getFileContent(vertFile);
+        ByteBuffer fragContent = getFileContent(fragFile);
+
+        shaderProgram = -1;
+
+        int vertShader = ARBShaderObjects.glCreateShaderObjectARB(ARBVertexShader.GL_VERTEX_SHADER_ARB);
+        int fragShader = ARBShaderObjects.glCreateShaderObjectARB(ARBFragmentShader.GL_FRAGMENT_SHADER_ARB);
+
+        ARBShaderObjects.glShaderSourceARB(vertShader, vertContent);
+        ARBShaderObjects.glShaderSourceARB(fragShader, fragContent);
+
+        ARBShaderObjects.glCompileShaderARB(vertShader);
+        ARBShaderObjects.glCompileShaderARB(fragShader);
+
+        shaderProgram = ARBShaderObjects.glCreateProgramObjectARB();
+
+        ARBShaderObjects.glAttachObjectARB(shaderProgram, vertShader);
+        ARBShaderObjects.glAttachObjectARB(shaderProgram, fragShader);
+
+        ARBShaderObjects.glLinkProgramARB(shaderProgram);
+
+        ARBShaderObjects.glDeleteObjectARB(vertShader);
+        ARBShaderObjects.glDeleteObjectARB(fragShader);
+
+        return shaderProgram;
+    }
+
+    /**
+     * This returns the contents of a file as a ByteBuffer.
+     * @param fileName The file name of which the content should be loaded.
+     * @return The content of the file as ByteBuffer or null if the loading
+     * failed.
+     */
+    private ByteBuffer getFileContent(String fileName)
+    {
+        File file = new File(fileName);
+        try
+        {
+            FileInputStream input = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            input.read(data);
+            input.close();
+            return ByteBuffer.wrap(data);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
     /**
      * This is the initialization of the open gl window. Here we set up
      * the display with its viewport and the projection matrix.<br>
@@ -92,29 +182,47 @@ public class Main {
         Display.setTitle("Computer Graphics");
         Display.create();
 
+
+        //Setup OpenGL
+        for(int i = 0; i < LIGHT_MAX; i++)
+        {
+            lightPosition[i] = new Vector4f();
+        }
+        lightColor[LIGHT_RED] = new Vector4f(1.0f, 0.0f, 0.0f, 1.0f);
+        lightColor[LIGHT_GREEN] = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
+        lightColor[LIGHT_BLUE] = new Vector4f(0.0f, 0.0f, 1.0f, 1.0f);
+
+        //We don't change the material over time anymore
+        //so set it fixed to white
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] {0.2f, 0.2f, 0.2f,  1.0f}));
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] {0.8f, 0.8f, 0.8f,  1.0f}));
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] {1.0f, 1.0f, 1.0f,  1.0f}));
+        GL11.glMaterial(GL11.GL_FRONT, GL11.GL_EMISSION, FloatBuffer.wrap(new float[] {0.0f, 0.0f, 0.0f,  1.0f}));
+        GL11.glMaterialf(GL11.GL_FRONT, GL11.GL_SHININESS, 64.0f);
+
         //Setup OpenGL
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_NORMALIZE);
 
-        // Somewhere in the initialization part of your program…
-        GL11.glEnable(GL11.GL_LIGHTING);
+        //Here we use the build-in OpenGL states of the lights. This could also
+        //be done by own uniform variables in the shader.
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] {lightColor[LIGHT_RED].x, lightColor[LIGHT_RED].y, lightColor[LIGHT_RED].z, lightColor[LIGHT_RED].w}));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] {lightColor[LIGHT_RED].x, lightColor[LIGHT_RED].y, lightColor[LIGHT_RED].z, lightColor[LIGHT_RED].w}));
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] {lightColor[LIGHT_RED].x, lightColor[LIGHT_RED].y, lightColor[LIGHT_RED].z, lightColor[LIGHT_RED].w}));
         GL11.glEnable(GL11.GL_LIGHT0);
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] {lightColor[LIGHT_GREEN].x, lightColor[LIGHT_GREEN].y, lightColor[LIGHT_GREEN].z, lightColor[LIGHT_GREEN].w}));
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] {lightColor[LIGHT_GREEN].x, lightColor[LIGHT_GREEN].y, lightColor[LIGHT_GREEN].z, lightColor[LIGHT_GREEN].w}));
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] {lightColor[LIGHT_GREEN].x, lightColor[LIGHT_GREEN].y, lightColor[LIGHT_GREEN].z, lightColor[LIGHT_GREEN].w}));
         GL11.glEnable(GL11.GL_LIGHT1);
+        GL11.glLight(GL11.GL_LIGHT2, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] {lightColor[LIGHT_BLUE].x, lightColor[LIGHT_BLUE].y, lightColor[LIGHT_BLUE].z, lightColor[LIGHT_BLUE].w}));
+        GL11.glLight(GL11.GL_LIGHT2, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] {lightColor[LIGHT_BLUE].x, lightColor[LIGHT_BLUE].y, lightColor[LIGHT_BLUE].z, lightColor[LIGHT_BLUE].w}));
+        GL11.glLight(GL11.GL_LIGHT2, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] {lightColor[LIGHT_BLUE].x, lightColor[LIGHT_BLUE].y, lightColor[LIGHT_BLUE].z, lightColor[LIGHT_BLUE].w}));
+        GL11.glEnable(GL11.GL_LIGHT2);
+        GL11.glEnable(GL11.GL_LIGHTING);
 
-
-        // GL_LIGHT0
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] { 0.9f, 0.3f, 0.5f, 1.0f }));
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] { 0.9f, 0.9f, 0.9f, 1.0f }));
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] { 0.4f, 0.4f, 0.4f, 1.0f }));
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, FloatBuffer.wrap(new float[] { 4.5f, 1.0f, 4.0f, 1.0f }));
-
-        // GL_LIGHT0
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, FloatBuffer.wrap(new float[] { 0.0f, 0.0f, 0.9f, 1.0f }));
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, FloatBuffer.wrap(new float[] { 0.2f, 0.2f, 0.2f, 1.0f }));
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, FloatBuffer.wrap(new float[] { 0.8f, 0.8f, 0.8f, 1.0f }));
-        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, FloatBuffer.wrap(new float[] { -4.0f, 1.0f, -4.0f, 1.0f }));
-
+        //Load shader from vert and frag files
+        shaderProgram = loadShaders("src/cg_project/phong.vert", "src/cg_project/phong.frag");
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         
@@ -206,6 +314,18 @@ public class Main {
                 World.getInstance().addCube(c);
 
             }
+            //Setting the lights before all renderings
+            float lightRadius = 4.0f;
+            lightPosition[LIGHT_RED].set((float)Math.sin(0.001f * time) * lightRadius, (float)Math.cos(0.001f * time) * lightRadius, 0.0f, 1.0f);
+            lightPosition[LIGHT_GREEN].set((float)Math.sin(0.002f * time) * lightRadius, 0.0f, (float)Math.cos(0.002f * time) * lightRadius, 1.0f);
+            lightPosition[LIGHT_BLUE].set(0.0f, (float)Math.sin(0.004f * time) * lightRadius, (float)Math.cos(0.004f * time) * lightRadius, 1.0f);
+
+            GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, FloatBuffer.wrap(
+                new float[] {lightPosition[LIGHT_RED].x, lightPosition[LIGHT_RED].y, lightPosition[LIGHT_RED].z, lightPosition[LIGHT_RED].w}));
+            GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, FloatBuffer.wrap(
+                new float[] {lightPosition[LIGHT_GREEN].x, lightPosition[LIGHT_GREEN].y, lightPosition[LIGHT_GREEN].z, lightPosition[LIGHT_GREEN].w}));
+            GL11.glLight(GL11.GL_LIGHT2, GL11.GL_POSITION, FloatBuffer.wrap(
+                new float[] {lightPosition[LIGHT_BLUE].x, lightPosition[LIGHT_BLUE].y, lightPosition[LIGHT_BLUE].z, lightPosition[LIGHT_BLUE].w}));
 
             //Clear to the background color
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -242,16 +362,19 @@ public class Main {
             } else {
                 ARBVertexBufferObject.glBindBufferARB(ARBVertexBufferObject.GL_ARRAY_BUFFER_ARB, 0);
             }
+
+            World.getInstance().draw();
+            
             
             // End of texturing
            // GL11.glDisable(GL11.GL_LIGHTING);
-            World.getInstance().draw();
+            
 
             // Zeichne Grid
             GL11.glColor3f(1.0f, 1.0f, 1.0f);
             GL11.glLineWidth(2.0f);
             Primitives.drawGrid(20, 1.0f);
-            
+
             //Swap the buffers
             Display.update();
 
