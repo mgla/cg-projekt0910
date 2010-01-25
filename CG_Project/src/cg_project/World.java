@@ -140,8 +140,8 @@ public class World {
         
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(cube.getId()));
         
-        //float[] cubeColor = cube.getColor();
-        //GL11.glColor4f(cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
+        float[] cubeColor = cube.getColor();
+        GL11.glColor4f(cubeColor[0], cubeColor[1], cubeColor[2], cubeColor[3]);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
         GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
@@ -254,6 +254,9 @@ public class World {
         //in pixels
         final int mouseHeight = 1;
         final int mouseWidth = 1;
+        
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
 
         GL11.glPushClientAttrib(GL11.GL_CLIENT_PIXEL_STORE_BIT);
 
@@ -264,9 +267,14 @@ public class World {
         GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_ROWS, 0);
         GL11.glPixelStorei(GL11.GL_UNPACK_SKIP_PIXELS, 0);
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        
+        draw();
 
         GL11.glReadPixels((int) pos.x, (int) pos.y, mouseWidth, mouseHeight, GL11.GL_RGBA, GL11.GL_FLOAT, color);
         GL11.glPopClientAttrib();
+        
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
 
         Iterator<Cube> it = objects.values().iterator();
         float[] cubeColor;
