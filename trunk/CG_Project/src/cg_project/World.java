@@ -65,6 +65,7 @@ public class World {
      * Adds a cube at the entrance point
      */
     public void addCube(Cube c) {
+    	// CORRECTION
         ARBBufferObject.glBindBufferARB(GL15.GL_ARRAY_BUFFER, vboObjectIds.get(cubeId));
         ARBBufferObject.glBufferDataARB(GL15.GL_ARRAY_BUFFER, Primitives.createCubeData(), GL15.GL_STATIC_DRAW);
         c.setId(cubeId);
@@ -102,6 +103,7 @@ public class World {
      * Fades a cube out a bit
      */
     public void fadeCubeOut(Cube c) {
+    	// CORRECTION
         c.setAlpha(c.getAlpha() - fadingSpeed);
     }
 
@@ -109,6 +111,7 @@ public class World {
      * Fades a cube in a bit
      */
     public void fadeCubeIn(Cube c){
+    	// CORRECTION
         c.setAlpha(c.getAlpha() + fadingSpeed);
     }
     
@@ -132,6 +135,7 @@ public class World {
      * Draws active and fading objects 
      */
     public void drawObject(Cube cube) {
+    	// CORRECTION
 
         final int numberOfTriangles = 12;
         final int SIZE_OF_DATA = 6;
@@ -170,6 +174,7 @@ public class World {
      * Moves object by direction.
      */
     public void moveObject(Cube c) {
+    	// CORRECTION
         Matrix4f mv = new Matrix4f();
         mv.load(objectEntrance);
         //move cube
@@ -183,6 +188,7 @@ public class World {
     }
 
     public void draw() {
+    	// CORRECTION
         Iterator<Cube> it = objects.values().iterator();
         LinkedList<Integer> cubesToFade = new LinkedList<Integer>();
         while (it.hasNext()) {
@@ -250,6 +256,7 @@ public class World {
      * Get Cube by Screen position - the picking function.
      */
     public Cube objectAtScreenPosition(Vector2f pos) {
+    	// CORRECTION
         FloatBuffer color = BufferUtils.createFloatBuffer(4);
         //in pixels
         final int mouseHeight = 1;
