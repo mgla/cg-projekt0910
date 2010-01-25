@@ -157,7 +157,7 @@ public class World {
         GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
         
         GL11.glPushMatrix();
-        	GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * 12);
+        	GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 3 * numberOfTriangles);
         GL11.glPopMatrix();
         
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
