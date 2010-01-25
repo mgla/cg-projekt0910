@@ -27,7 +27,7 @@ public class World {
 
     private static World instance = new World();
     //! how long the object travels from begin to end position
-    private int objectDuration = 150;
+    private int objectDuration = 1500;
     // object entrance point
     private Matrix4f objectEntrance = new Matrix4f();
     private Vector3f direction = new Vector3f(1f / objectDuration, 0, -1f / objectDuration);

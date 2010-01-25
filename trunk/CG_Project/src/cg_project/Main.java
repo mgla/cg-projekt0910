@@ -68,7 +68,7 @@ public class Main {
 
     
     // Time between spawn of two cubes in milliseconds
-    private int spawnTime = 1400;
+    private int spawnTime = 800;
 
     /**
      * Entry point for the java program.
