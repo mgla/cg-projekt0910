@@ -30,6 +30,7 @@ import org.lwjgl.opengl.ARBVertexBufferObject;
  * @author Maik Glatki, Christian Dernehl, Dominic Gatzen, huge parts: Lehrstuhl f�r Informatik VIII exercises 
  */
 
+
 public class Main {
     private int width = 640;
     private int height = 480;
@@ -120,6 +121,7 @@ public class Main {
      */
     private int loadShaders(String vertFile, String fragFile)
     {
+    	// CORRECTION
         ByteBuffer vertContent = getFileContent(vertFile);
         ByteBuffer fragContent = getFileContent(fragFile);
 
@@ -315,6 +317,7 @@ public class Main {
 
             }
             //Setting the lights before all renderings
+            // CORRECTION
             float lightRadius = 4.0f;
             lightPosition[LIGHT_RED].set((float)Math.sin(0.001f * time) * lightRadius, (float)Math.cos(0.001f * time) * lightRadius, 0.0f, 1.0f);
             lightPosition[LIGHT_GREEN].set((float)Math.sin(0.002f * time) * lightRadius, 0.0f, (float)Math.cos(0.002f * time) * lightRadius, 1.0f);
