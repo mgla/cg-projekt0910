@@ -24,12 +24,16 @@ public class Main {
     private int width = 640;
     private int height = 480;
     private float fov = 60.0f;
-    private Vector4f cameraPosition = new Vector4f(-3.0f, 5.0f, 5.0f, 1.0f);
+    private Vector4f cameraPosition = new Vector4f(7.0f, 5.0f, 5.0f, 1.0f);
     
     // Specifications from exercise04 solution
     private final int TEXTURE_CUBE_DUMMY = 0;
     private final int TEXTURE_CUBE_METAL = 1;
-    private final int TEXTURE_COUNT = 2;
+    private final int TEXTURE_TEX1 = 2;
+    private final int TEXTURE_TEX2 = 3;
+    private final int TEXTURE_TEX3 = 4;
+    private final int TEXTURE_TEX4 = 5;
+    private final int TEXTURE_COUNT = 6;
     private float GL_VERSION;
     //3 for position, 3 for normals, 2 for texture coordinates
     private final int SIZE_OF_DATA = 8;
@@ -137,6 +141,31 @@ public class Main {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         
+        textureImporter = new TextureImporter("tex1.jpg");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX1));
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        
+        
+        textureImporter = new TextureImporter("tex2.jpg");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX2));
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        
+        
+        textureImporter = new TextureImporter("tex3.jpg");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX3));
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        
+        textureImporter = new TextureImporter("tex4.jpg");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(TEXTURE_TEX4));
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
         //Setup Projection and Viewport
         GL11.glViewport(0, 0, width, height);
@@ -185,7 +214,7 @@ public class Main {
             //View matrix
             GLU.gluLookAt(
                     cameraPosition.x, cameraPosition.y, cameraPosition.z,
-                    -3.0f, 0.0f, -5.0f,
+                    0.0f, 0.0f, -5.0f,
                     0.0f, 1.0f, 0.0f);          
             
 
@@ -217,7 +246,7 @@ public class Main {
             World.getInstance().draw();
 
             // Zeichne Grid
-            GL11.glColor3f(0.8f, 0.8f, 0.8f);
+            GL11.glColor3f(1.0f, 1.0f, 1.0f);
             GL11.glLineWidth(2.0f);
             Primitives.drawGrid(20, 1.0f);
             
