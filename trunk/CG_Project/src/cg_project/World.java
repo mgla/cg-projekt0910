@@ -12,6 +12,7 @@ import java.util.ListIterator;
 import java.util.TreeMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ARBBufferObject;
+import org.lwjgl.opengl.ARBMultitexture;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
@@ -149,8 +150,8 @@ public class World {
         
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.getTextureID());
 
-        GL13.glClientActiveTexture(GL13.GL_TEXTURE0);
-
+        //GL13.glClientActiveTexture(GL13.GL_TEXTURE0);
+        ARBMultitexture.glClientActiveTextureARB(GL13.GL_TEXTURE0);
         
         GL11.glVertexPointer(3, GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 0);
         GL11.glNormalPointer(GL11.GL_FLOAT, SIZE_OF_DATA * SIZE_OF_FLOAT, 3 * SIZE_OF_FLOAT);
