@@ -222,7 +222,7 @@ public class Main {
         GL11.glEnable(GL11.GL_LIGHTING);
 
         //Load shader from vert and frag files
-        shaderProgram = loadShaders("src/cg_project/phong.vert", "src/cg_project/phong.frag");
+        shaderProgram = loadShaders("res/shaders/phong.vert", "res/shaders/phong.frag");
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         
@@ -235,7 +235,7 @@ public class Main {
     	}
         // MasterCube
         
-        ObjImporter objImporter = new ObjImporter("Dummy.obj");
+        ObjImporter objImporter = new ObjImporter("res/geometry/Dummy.obj");
         if(GL_VERSION >= 1.5)
         {
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboid.get(GEOMETRY_CUBE));
@@ -269,7 +269,7 @@ public class Main {
         
         while (e.hasMoreElements()) {
             Integer key = (Integer) e.nextElement();
-            textureImporter = new TextureImporter(hash.get(key));
+            textureImporter = new TextureImporter("res/textures/"+hash.get(key));
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureid.get(key.intValue()));
             GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, textureImporter.getWidth(), textureImporter.getHeight(), 0, textureImporter.hasAlpha() ? GL11.GL_RGBA : GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, textureImporter.getData());
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
